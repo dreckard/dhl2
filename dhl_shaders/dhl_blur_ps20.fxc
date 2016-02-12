@@ -1,0 +1,34 @@
+#include "common_ps_fxc.h"
+
+sampler BaseTextureSampler	: register( s0 );
+
+
+//const HALF4 cColor :  register( c0 );
+const HALF RednessScalar : register( c0 );
+
+
+struct PS_INPUT
+{
+	HALF2 Tex0 : TEXCOORD0;
+	HALF2 Tex1 : TEXCOORD1;
+	HALF2 Tex2 : TEXCOORD2;
+	HALF2 Tex3 : TEXCOORD3;
+	HALF2 Tex4 : TEXCOORD4;
+};
+
+struct PS_OUTPUT
+{
+	HALF4 Color      : COLOR;  // Pixel color    
+};
+
+//Our input is the vertex shader's output
+PS_OUTPUT main( PS_INPUT input )
+{
+    HALF4 sum1 = (tex2D(BaseTextureSampler, input.Tex0) + tex2D(BaseTextureSampler, input.Tex1)) / 2;
+	HALF4 sum2 = (tex2D(BaseTextureSampler, input.Tex2) + tex2D(BaseTextureSampler, input.Tex3)) / 2;
+
+	PS_OUTPUT output;
+	output.Color = (sum1 + sum2 + tex2D(BaseTextureSampler, input.Tex4) ) / 3;
+	output.Color.r *= RednessScalar;
+	return output;
+}

@@ -1,0 +1,23 @@
+//Simple DHL postprocess shader - grayscale
+//Author: Skillet
+
+#include "common_ps_fxc.h"
+
+sampler BaseTextureSampler   : register( s0 );
+
+struct PS_INPUT
+{
+   float2 vBaseTexCoord : TEXCOORD0;
+};
+
+const float flAlpha :  register( c0 );
+float4 main( PS_INPUT i ) : COLOR
+{
+   //Standard values from internets: 0.3025f, 0.5954f, 0.1121f
+   float4 GrayscaleWeights = { 0.3025f, 0.5954f, 0.1121f, 0.0f };
+   float4 mainColor = tex2D( BaseTextureSampler, i.vBaseTexCoord );
+   
+   float4 scaledColor = dot(mainColor,GrayscaleWeights);
+   
+   return (1.0f-flAlpha)*(mainColor) + (flAlpha)*(scaledColor);
+}

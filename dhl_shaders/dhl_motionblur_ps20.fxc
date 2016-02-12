@@ -1,0 +1,49 @@
+#include "common_ps_fxc.h"
+
+
+sampler BaseTextureSampler	: register( s0 );
+sampler PrevTextureSampler	: register( s1 );
+
+
+const HALF flPassNum : register( c0 );
+
+
+struct PS_INPUT
+{
+	HALF2 Tex0 : TEXCOORD0;
+};
+
+struct PS_OUTPUT
+{
+	HALF4 Color      : COLOR;  // Pixel color    
+};
+
+//Our input is the vertex shader's output
+PS_OUTPUT main( PS_INPUT input )
+{
+	PS_OUTPUT output = ( PS_OUTPUT )0;
+	
+	HALF4 CurFrameColor = tex2D(BaseTextureSampler, input.Tex0 );
+	HALF4 PrevFrameColor = tex2D(PrevTextureSampler, input.Tex0 );
+	PrevFrameColor.a = 0.2;
+	
+	//HALF r = (CurFrameColor.r + PrevFrameColor.r) / 2;
+	//HALF g = (CurFrameColor.g + PrevFrameColor.g) / 2;
+	//HALF b = (CurFrameColor.b + PrevFrameColor.b) / 2;
+	//HALF a = (CurFrameColor.a + PrevFrameColor.a) / 2;
+	
+	//output.Color = HALF4( r, g, b, a );
+	output.Color = CurFrameColor;
+	//output.Color = HALF4( 1.0, 0, 0, 0.5 );
+	if ( flPassNum == 1.0 )
+	{
+		//output.Color = HALF4( 0, 1.0, 0, 0.5 );
+		output.Color = CurFrameColor;
+	}
+	else if ( flPassNum == 2.0 )
+	{
+		//output.Color = HALF4( 0, 0, 1.0, 0.5 );
+		output.Color = PrevFrameColor;
+	}
+	return output;
+}

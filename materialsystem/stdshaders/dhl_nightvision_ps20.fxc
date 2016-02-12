@@ -1,0 +1,19 @@
+//Simple DHL postprocess shader for nightvision
+//Author: Skillet
+
+#include "common_ps_fxc.h"
+
+sampler BaseTextureSampler   : register( s0 );
+
+struct PS_INPUT
+{
+   HALF2 vBaseTexCoord : TEXCOORD0;
+};
+
+HALF4 main( PS_INPUT i ) : COLOR
+{
+   HALF4 mainColor = tex2D( BaseTextureSampler, i.vBaseTexCoord );
+   mainColor *= 2.0f; //Brighten everything
+   mainColor.g *= 2; //Give everything a green tint
+   return mainColor;
+}

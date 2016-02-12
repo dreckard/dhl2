@@ -1,0 +1,33 @@
+#include "common_ps_fxc.h"
+
+sampler BaseTextureSampler   : register( s0 );
+
+//Warning: Source does NOT like global variables
+//It will break things in DX modes < 9.0 (Only God knows why)
+//Do it in the shader body
+
+struct PS_INPUT
+{
+   HALF2 vBaseTexCoord : TEXCOORD0;
+};
+
+//Very important! This line is needed for the shader DLL to work properly
+//Without it the shader will not render at all (the material will be black).
+const float4 cColor :  register( c0 );
+
+HALF4 main( PS_INPUT i ) : COLOR
+{
+   //Standard: 0.3025f, 0.5954f, 0.1121f
+   HALF4 GrayscaleWeights = { 0.3025f, 0.5954f, 0.1121f, 1.0f };
+   HALF4 outputColor;
+   HALF4 mainColor = tex2D( BaseTextureSampler, i.vBaseTexCoord );   
+
+   HALF4 scaledColor = mainColor * (0.3025f,0.5954f, 0.1121f, 1.0f) ;
+   HALF luminance = scaledColor.r + scaledColor.g + scaledColor.b;
+
+   outputColor = HALF4( luminance, luminance, luminance, mainColor.a );
+   //As is it's very bright, so tone it down a bit
+   outputColor *= 0.35;
+
+   return outputColor;
+}

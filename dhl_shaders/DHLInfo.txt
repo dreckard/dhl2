@@ -1,0 +1,4 @@
+The shader compiler sucks at paths with spaces in them, so I recommend exporting your
+devtools, dx9sdk, materialsystem, and sdkshaders folders to a location with no spaces.
+Then run build_dhl_shaders.bat from there and you're set.  I also recommend writing a little
+batch script to pause at the end of compiling.

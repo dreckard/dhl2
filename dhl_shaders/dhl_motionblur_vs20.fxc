@@ -1,0 +1,25 @@
+#include "common_vs_fxc.h"
+
+//float amt;  //Blur amount
+
+struct VS_INPUT
+{
+    HALF4 vPos                        : POSITION;
+    HALF2 vBaseTexCoord            : TEXCOORD0;
+};
+
+struct VS_OUTPUT
+{
+    HALF4 vProjPos                    : POSITION;
+    HALF2 vBaseTexCoord0            : TEXCOORD0;
+};
+
+
+VS_OUTPUT main( const VS_INPUT v )
+{
+    //Reset this stuff at the beginning of every frame
+    VS_OUTPUT o = ( VS_OUTPUT )0;
+    o.vProjPos = v.vPos;
+	o.vBaseTexCoord0 = v.vBaseTexCoord;
+	return o;
+}

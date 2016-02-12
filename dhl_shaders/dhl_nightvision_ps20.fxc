@@ -1,0 +1,20 @@
+#include "common_ps_fxc.h"
+
+sampler BaseTextureSampler   : register( s0 );
+
+struct PS_INPUT
+{
+   HALF2 vBaseTexCoord : TEXCOORD0;
+};
+
+//Very important! This line is needed for the shader DLL to work properly
+//Without it the shader will not render at all (the material will be black).
+const float4 cColor :  register( c0 );
+
+HALF4 main( PS_INPUT i ) : COLOR
+{
+   HALF4 mainColor = tex2D( BaseTextureSampler, i.vBaseTexCoord );
+   mainColor *= 2.0f; //Brighten everything
+   mainColor.g *= 2; //Give everything a green tint
+   return mainColor;
+}

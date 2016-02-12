@@ -1,0 +1,30 @@
+#include "common_vs_fxc.h"
+
+struct VS_INPUT
+{
+    HALF3 vPos                        : POSITION;
+    HALF2 vBaseTexCoord            : TEXCOORD0;
+};
+
+struct VS_OUTPUT
+{
+    HALF4 vProjPos                    : POSITION;
+	//HALF2 vBaseTexCoord			: TEXCOORD0;
+    HALF4 flDepth            	: COLOR0;
+};
+
+const float3x4 cTransformMat :  register( SHADER_SPECIFIC_CONST_0 );
+VS_OUTPUT main( const VS_INPUT v )
+{
+    VS_OUTPUT o = ( VS_OUTPUT )0;
+
+    // Project the point.
+    //float3 vProjPos = mul( v.vPos, cModelViewProj );
+	o.vProjPos = mul( HALF4( v.vPos, 1 ), cTransformMat );
+	//o.vProjPos = mul( HALF4( v.vPos, 1 ), cViewProj );
+	//o.vBaseTexCoord = v.vBaseTexCoord;
+    
+    o.flDepth = HALF4( o.vProjPos.z, o.vProjPos.z, o.vProjPos.z, 1.0f );
+
+    return o;
+}
